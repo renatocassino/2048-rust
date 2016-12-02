@@ -11,6 +11,18 @@ pub fn rotate_board_game(game: &mut[[i32; 4]; 4]) {
     }
 }
 
+pub fn is_winner_game(game: &[[i32;4]; 4]) -> bool {
+    for y in 0..4 {
+        for x in 0..4 {
+            if game[x][y] == 2048 {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 fn print_number_with_pad(number: i32, last: bool) {
     if(number < 10) {
         print!("   {}", number);

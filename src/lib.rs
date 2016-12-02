@@ -1,6 +1,33 @@
 mod game;
 
 #[test]
+fn test_if_not_win_the_game() {
+    let mut game: [[i32; 4]; 4] =
+    [
+        [0,0,0,0],
+        [0,0,0,0],
+        [0,0,0,0],
+        [0,0,0,0]
+    ];
+
+    assert_eq!(game::is_winner_game(&game), false);
+}
+
+
+#[test]
+fn test_if_win_the_game() {
+    let mut game: [[i32; 4]; 4] =
+    [
+        [0,2048,0,0],
+        [0,0,0,0],
+        [0,0,0,0],
+        [0,0,0,0]
+    ];
+
+    assert!(game::is_winner_game(&game));
+}
+
+#[test]
 fn test_rotate_board() {
 
     /*
