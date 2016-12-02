@@ -76,7 +76,7 @@ fn print_number_with_pad(number: i32, last: bool) {
     }
 }
 
-pub fn print_board_game(game: &mut[[i32; 4]; 4]) {
+pub fn print_board_game(game: &[[i32; 4]; 4]) {
     for y in 0..4 {
         for x in 0..4 {
             print_number_with_pad(game[x][y], x == 3);
