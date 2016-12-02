@@ -11,19 +11,31 @@ pub fn rotate_board_game(game: &mut[[i32; 4]; 4]) {
     }
 }
 
-fn print_line(line: &mut[i32; 4]) {
-    println!("  {} | {} | {} | {}", line[0], line[1], line[2], line[3]);
-}
+fn print_number_with_pad(number: i32, last: bool) {
+    if(number < 10) {
+        print!("   {}", number);
+    } else if(number < 100) {
+        print!("  {}", number);
+    } else if(number < 1000) {
+        print!(" {}", number);
+    } else {
+        print!("{}", number);
+    }
 
-fn print_separator() {
-    println!("-------------------");
+    if !last {
+        print!(" | ");
+    }
 }
 
 pub fn print_board_game(game: &mut[[i32; 4]; 4]) {
-    for n in 0..4 {
-        print_line(&mut game[n]);
-        if n != 4 {
-            print_separator();
+    for y in 0..4 {
+        for x in 0..4 {
+            print_number_with_pad(game[x][y], x == 3);
+        }
+
+        if y != 4 {
+            println!("");
+            println!("-------------------------");
         }
     }
 }
