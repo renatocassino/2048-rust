@@ -29,11 +29,34 @@ fn main() {
     game::add_number(&mut game);
     game::print_board_game(&game);
 
+    let mut looser = false;
     while true {
         let answer = ask_movement();
-        game::print_board_game(&game);
 
-        break;
+        if answer.trim() == "w" {
+            println!("Go Up!");
+        } else if answer.trim() == "a" {
+            println!("Go Left");
+        } else if answer.trim() == "d" {
+            println!("Go Right");
+        } else if answer.trim() == "s" {
+            println!("GO DOWN");
+        } else {
+            continue;
+        }
+
+        game::add_number(&mut game);
+        game::print_board_game(&game);
+        if game::is_looser_game(&game) {
+            looser = true;
+            break;
+        }
+    }
+
+    if looser {
+        println!("Ops! You loose the game!");
+    } else {
+        println!("CONGRATULATIONS! You win the game");
     }
 }
 
