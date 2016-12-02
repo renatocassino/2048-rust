@@ -1,8 +1,49 @@
 mod game;
 
 #[test]
+fn replace_random_zero_in_2_or_4_in_game() {
+    let mut game: [[i32; 4]; 4] = [
+        [2,2,2,2],
+        [2,2,2,2],
+        [2,2,2,2],
+        [0,2,2,2]
+    ];
+
+    game::add_number(&mut game);
+    assert!(
+        ((game[3][0] == 2) || (game[3][0] == 4))
+    );
+}
+
+#[test]
+fn test_if_loose_the_game() {
+    let game: [[i32; 4]; 4] =
+    [
+        [2,2,2,2],
+        [2,2,2,2],
+        [2,2,2,2],
+        [2,2,2,2]
+    ];
+
+    assert_eq!(game::is_looser_game(&game), true);
+}
+
+#[test]
+fn test_if_not_loose_the_game() {
+    let game: [[i32; 4]; 4] =
+    [
+        [2,2,2,2],
+        [2,2,2,2],
+        [2,2,2,2],
+        [2,2,2,2]
+    ];
+
+    assert_eq!(game::is_looser_game(&game), true);
+}
+
+#[test]
 fn test_if_not_win_the_game() {
-    let mut game: [[i32; 4]; 4] =
+    let game: [[i32; 4]; 4] =
     [
         [0,0,0,0],
         [0,0,0,0],
@@ -16,7 +57,7 @@ fn test_if_not_win_the_game() {
 
 #[test]
 fn test_if_win_the_game() {
-    let mut game: [[i32; 4]; 4] =
+    let game: [[i32; 4]; 4] =
     [
         [0,2048,0,0],
         [0,0,0,0],
