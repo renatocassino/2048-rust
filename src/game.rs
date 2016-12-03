@@ -3,6 +3,9 @@ extern crate rand;
 use std::io;
 use self::rand::Rng;
 
+extern crate ansi_term;
+use self::ansi_term::Colour::*;
+
 pub fn rotate_board_game(game: &mut[[i32; 4]; 4]) {
     let n = 4;
     for i in 0..(4/2) {
@@ -60,15 +63,47 @@ pub fn is_winner_game(game: &[[i32;4]; 4]) -> bool {
     return has_number_in_game(game, 2048);
 }
 
+fn get_colored_number(number: i32) -> String {
+    if number == 0 {
+        return White.paint(number.to_string()).to_string()
+    } else if number == 2 {
+        return Yellow.paint(number.to_string()).to_string();
+    } else if number == 4 {
+        return Yellow.bold().paint(number.to_string()).to_string();
+    } else if number == 8 {
+        return Cyan.paint(number.to_string()).to_string();
+    } else if number == 16 {
+        return Cyan.bold().paint(number.to_string()).to_string();
+    } else if number == 32 {
+        return Purple.paint(number.to_string()).to_string();
+    } else if number == 64 {
+        return Purple.bold().paint(number.to_string()).to_string();
+    } else if number == 128 {
+        return Green.paint(number.to_string()).to_string();
+    } else if number == 256 {
+        return Green.bold().paint(number.to_string()).to_string();
+    } else if number == 512 {
+        return White.bold().paint(number.to_string()).to_string();
+    } else if number == 1024 {
+        return Red.paint(number.to_string()).to_string();
+    } else if number == 2048 {
+        return Red.bold().paint(number.to_string()).to_string();
+    }
+
+    return number.to_string();
+}
+
 fn print_number_with_pad(number: i32, last: bool) {
+    let color_number:String = get_colored_number(number);
+    
     if number < 10 {
-        print!("   {}", number);
+        print!("   {}", color_number);
     } else if number < 100 {
-        print!("  {}", number);
+        print!("  {}", color_number);
     } else if number < 1000 {
-        print!(" {}", number);
+        print!(" {}", color_number);
     } else {
-        print!("{}", number);
+        print!("{}", color_number);
     }
 
     if !last {

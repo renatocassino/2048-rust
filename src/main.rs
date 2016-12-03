@@ -10,14 +10,9 @@ fn ask_movement() -> String {
 }
 
 fn main() {
-    //    println!("Guess the number!");
-    //    let secret_number = rand::thread_rng().gen_range(1, 101);
-    //    println!("The secret number is: {}", secret_number);
-    //    println!("Please input your guess.");
-
     let mut game: [[i32; 4]; 4] =
         [
-            [0,0,0,0],
+            [0,0,0,0], // Line, not column
             [0,0,0,0],
             [0,0,0,0],
             [0,0,0,0]
@@ -47,8 +42,13 @@ fn main() {
 
         game::add_number(&mut game);
         game::print_board_game(&game);
+
         if game::is_looser_game(&game) {
             looser = true;
+            break;
+        }
+
+        if game::is_winner_game(&game) {
             break;
         }
     }
