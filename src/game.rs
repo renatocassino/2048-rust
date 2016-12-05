@@ -96,7 +96,7 @@ pub fn slide_array(line: &mut[i32; 4]) -> bool {
     let mut score = 0;
     let mut success = false;
 
-    for x in 0..size-1 {
+    for x in 0..size {
         if line[x] != 0 {
             let t = find_target(&line, x as i32, stop);
             if t != x as i32 {

@@ -6,6 +6,9 @@ fn slide_array() {
     game::slide_array(&mut game);
 
     assert!(game[0] == 4);
+    assert!(game[1] == 4);
+    assert!(game[2] == 0);
+    assert!(game[3] == 0);
 }
 
 #[test]
