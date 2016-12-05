@@ -9,6 +9,41 @@ fn ask_movement() -> String {
     return guess;
 }
 
+fn move_up(game: &mut[[i32; 4]; 4]) -> bool {
+    let mut success = false;
+    for x in 0..4 {
+        success |= game::slide_array(&mut game[x]);
+    }
+    return success;
+}
+
+fn move_left(mut game: &mut[[i32; 4]; 4]) -> bool {
+    game::rotate_board_game(&mut game);
+    let success = move_up(&mut game);
+    game::rotate_board_game(&mut game);
+    game::rotate_board_game(&mut game);
+    game::rotate_board_game(&mut game);
+    return success;
+}
+
+fn move_right(mut game: &mut[[i32; 4]; 4]) -> bool {
+    game::rotate_board_game(&mut game);
+    game::rotate_board_game(&mut game);
+    game::rotate_board_game(&mut game);
+    let success = move_up(&mut game);
+    game::rotate_board_game(&mut game);
+    return success;    
+}
+
+fn move_down(mut game: &mut[[i32; 4]; 4]) -> bool {
+    game::rotate_board_game(&mut game);
+    game::rotate_board_game(&mut game);
+    let success = move_up(&mut game);
+    game::rotate_board_game(&mut game);
+    game::rotate_board_game(&mut game);
+    return success;
+}
+
 fn main() {
     let mut game: [[i32; 4]; 4] =
         [
@@ -29,13 +64,13 @@ fn main() {
         let answer = ask_movement();
 
         if answer.trim() == "w" {
-            println!("Go Up!");
+            move_up(&mut game);
         } else if answer.trim() == "a" {
-            println!("Go Left");
+            move_left(&mut game);
         } else if answer.trim() == "d" {
-            println!("Go Right");
+            move_right(&mut game);
         } else if answer.trim() == "s" {
-            println!("GO DOWN");
+            move_down(&mut game);
         } else {
             continue;
         }

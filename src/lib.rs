@@ -1,6 +1,14 @@
 mod game;
 
 #[test]
+fn slide_array() {
+    let mut game: [i32; 4] = [2,2,2,2];
+    game::slide_array(&mut game);
+
+    assert!(game[0] == 4);
+}
+
+#[test]
 fn replace_random_zero_in_2_or_4_in_game() {
     let mut game: [[i32; 4]; 4] = [
         [2,2,2,2],

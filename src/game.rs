@@ -63,6 +63,55 @@ pub fn is_winner_game(game: &[[i32;4]; 4]) -> bool {
     return has_number_in_game(game, 2048);
 }
 
+fn find_target(game: &[i32; 4], x: i32, stop: i32) -> i32 {
+    // if the position is already on the first, don't evaluate
+    if x==0 {
+        return x;
+    }
+
+    let mut t:usize = (x as usize) - 1;
+    while t >= 0 { // (t=x-1;t>=0;t--) {
+        if game[t] != 0 { //(array[t]!=0) {
+            if game[t] != game[x as usize] {
+                // merge is not possible, take next position
+                return (t as i32) + 1;
+            }
+            return t as i32;
+        } else {
+            // we should not slide further, return this one
+            if t==stop as usize {
+                return t as i32;
+            }
+        }
+        t = t-1;
+    }
+    // we did not find a
+    return x;
+}
+
+
+pub fn slide_array(line: &mut[i32; 4]) -> bool {
+    let size = 4;
+    let mut stop = 0;
+    let mut score = 0;
+    let mut success = false;
+
+    for x in 0..size-1 {
+        if line[x] != 0 {
+            let t = find_target(&line, x as i32, stop);
+            if t != x as i32 {
+                if line[t as usize] != 0 {
+                    stop = t+1;
+                }
+                line[t as usize] += line[x];
+                line[x] = 0;
+                success = true;
+            }
+        }
+    }
+    return success;
+}
+
 fn get_colored_number(number: i32) -> String {
     if number == 0 {
         return White.paint(number.to_string()).to_string()
