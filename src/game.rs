@@ -5,6 +5,7 @@ use self::rand::Rng;
 
 extern crate ansi_term;
 use self::ansi_term::Colour::*;
+use self::ansi_term::Style;
 
 pub fn rotate_board_game(game: &mut[[i32; 4]; 4]) {
     let n = 4;
@@ -112,49 +113,51 @@ pub fn slide_array(line: &mut[i32; 4]) -> bool {
     return success;
 }
 
-fn get_colored_number(number: i32) -> String {
+fn get_colored_number(number_with_pad: String, number: i32) -> String {
     if number == 0 {
-        return White.paint(number.to_string()).to_string()
+        return Style::new().on(Black).fg(White).paint(number_with_pad).to_string();
     } else if number == 2 {
-        return Yellow.paint(number.to_string()).to_string();
+        return Style::new().on(Yellow).fg(Black).paint(number_with_pad).to_string();
     } else if number == 4 {
-        return Yellow.bold().paint(number.to_string()).to_string();
+        return Style::new().on(Cyan).fg(Black).paint(number_with_pad).to_string();
     } else if number == 8 {
-        return Cyan.paint(number.to_string()).to_string();
+        return Style::new().on(Purple).fg(Black).paint(number_with_pad).to_string();
     } else if number == 16 {
-        return Cyan.bold().paint(number.to_string()).to_string();
+        return Style::new().on(Green).fg(Black).paint(number_with_pad).to_string();
     } else if number == 32 {
-        return Purple.paint(number.to_string()).to_string();
+        return Style::new().on(Purple).fg(White).bold().paint(number_with_pad).to_string();
     } else if number == 64 {
-        return Purple.bold().paint(number.to_string()).to_string();
+        return Style::new().on(Green).fg(White).bold().paint(number_with_pad).to_string();
     } else if number == 128 {
-        return Green.paint(number.to_string()).to_string();
+        return Style::new().on(White).fg(Black).paint(number_with_pad).to_string();
     } else if number == 256 {
-        return Green.bold().paint(number.to_string()).to_string();
+        return Style::new().on(Red).fg(Black).bold().paint(number_with_pad).to_string();
     } else if number == 512 {
-        return White.bold().paint(number.to_string()).to_string();
+        return Style::new().on(Cyan).fg(Yellow).paint(number_with_pad).to_string();
     } else if number == 1024 {
-        return Red.paint(number.to_string()).to_string();
+        return Style::new().on(Red).fg(Black).paint(number_with_pad).to_string();
     } else if number == 2048 {
-        return Red.bold().paint(number.to_string()).to_string();
+        return Style::new().on(Red).fg(White).bold().paint(number_with_pad).to_string();
     }
 
-    return number.to_string();
+    return number_with_pad;
 }
 
 fn print_number_with_pad(number: i32, last: bool) {
-    let color_number:String = get_colored_number(number);
-    
-    if number < 10 {
-        print!("   {}", color_number);
+    let mut color: String;
+    if number == 0 {
+        color = format!("    ");
+    } else if number < 10 {
+        color = format!("  {} ", number.to_string());
     } else if number < 100 {
-        print!("  {}", color_number);
+        color = format!(" {} ", number.to_string());
     } else if number < 1000 {
-        print!(" {}", color_number);
+        color = format!(" {}", number.to_string());
     } else {
-        print!("{}", color_number);
+        color = format!("{}", number.to_string());
     }
 
+    print!("{}", get_colored_number(color, number));
     if !last {
         print!(" | ");
     }
