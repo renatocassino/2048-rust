@@ -45,6 +45,18 @@ fn move_down(mut game: &mut[[i32; 4]; 4]) -> bool {
 }
 
 fn main() {
+    let version = "1.0";
+
+    println!("    _______  _______  _   ___   _____    _______  _______  __   __  _______ ");
+    println!("   |       ||  _    || | |   | |  _  |  |       ||   _   ||  |_|  ||       |");
+    println!("   |____   || | |   || |_|   | | |_| |  |    ___||  |_|  ||       ||    ___|");
+    println!("    ____|  || | |   ||       ||   _   | |   | __ |       ||       ||   |___ ");
+    println!("   | ______|| |_|   ||___    ||  | |  | |   ||  ||       ||       ||    ___|");
+    println!("   | |_____ |       |    |   ||  |_|  | |   |_| ||   _   || ||_|| ||   |___ ");
+    println!("   |_______||_______|    |___||_______| |_______||__| |__||_|   |_||_______|");
+    println!("                                                                 By Tacnoman");
+    println!("                                                                Version: {}", version);
+
     let mut game: [[i32; 4]; 4] =
         [
             [0,0,0,0], // Line, not column
@@ -52,8 +64,6 @@ fn main() {
             [0,0,0,0],
             [0,0,0,0]
         ];
-
-    println!("{}", game[0][0]);
 
     game::add_number(&mut game);
     game::add_number(&mut game);
