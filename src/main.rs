@@ -60,18 +60,23 @@ fn main() {
     game::print_board_game(&game);
 
     let mut looser = false;
+    let mut success = false;
     while true {
         let answer = ask_movement();
 
         if answer.trim() == "w" {
-            move_up(&mut game);
+            success = move_up(&mut game);
         } else if answer.trim() == "a" {
-            move_left(&mut game);
+            success = move_left(&mut game);
         } else if answer.trim() == "d" {
-            move_right(&mut game);
+            success = move_right(&mut game);
         } else if answer.trim() == "s" {
-            move_down(&mut game);
+            success = move_down(&mut game);
         } else {
+            continue;
+        }
+
+        if !success {
             continue;
         }
 
