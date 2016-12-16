@@ -47,7 +47,7 @@ fn move_down(mut game: &mut[[i32; 4]; 4]) -> bool {
     return success;
 }
 
-fn print_line(rustbox: &RustBox) {
+fn print_logo(rustbox: &RustBox) {
     rustbox.print(1,1,rustbox::RB_BOLD, Color::White, Color::Black, "    _______  _______  _   ___   _____    _______  _______  __   __  _______ ");
     rustbox.print(1,2,rustbox::RB_BOLD, Color::White, Color::Black, "   |       ||  _    || | |   | |  _  |  |       ||   _   ||  |_|  ||       |");
     rustbox.print(1,3,rustbox::RB_BOLD, Color::White, Color::Black, "   |____   || | |   || |_|   | | |_| |  |    ___||  |_|  ||       ||    ___|");
@@ -59,8 +59,24 @@ fn print_line(rustbox: &RustBox) {
     rustbox.print(1,9,rustbox::RB_BOLD, Color::White, Color::Black, "                                                                Version: 1.0");
 }
 
+fn print_message(rustbox: &RustBox) {
+    rustbox.print(1, 30, rustbox::RB_BOLD, Color::White, Color::Black, "You can control the board with the keys w,a,s and d.");
+}
+
 fn main() {
     let version = "1.0";
+
+    
+    let mut game: [[i32; 4]; 4] =
+        [
+            [0,0,0,0], // Line is a column
+            [0,0,0,0],
+            [0,0,0,0],
+            [0,0,0,0]
+        ];
+    
+    game::add_number(&mut game);
+    game::add_number(&mut game);
 
     let rustbox = match RustBox::init(Default::default()) {
         Result::Ok(v) => v,
@@ -71,34 +87,46 @@ fn main() {
     rustbox.print(1, 3, rustbox::RB_BOLD, Color::White, Color::Black,
                   "Press 'q' to quit.");
 
+    let mut winner = false;
+    let mut success = false;
     loop {
-        print_line(&rustbox);
+        print_logo(&rustbox);
+        print_message(&rustbox);
+
+        game::print_board_game(&rustbox, &game);
         rustbox.present();
         match rustbox.poll_event(false) {
             Ok(rustbox::Event::KeyEvent(key)) => {
                 match key {
                     Key::Char('q') => { break; }
-                    Key::Char('k') => { continue; }
+                    Key::Char('w') => { success = move_up(&mut game); }
+                    Key::Char('a') => { success = move_left(&mut game); }
+                    Key::Char('s') => { success = move_down(&mut game); }
+                    Key::Char('d') => { success = move_right(&mut game); }
                     _ => { }
                 }
+                game::add_number(&mut game);
             },
             Err(e) => panic!("{}", e),
             _ => { }
         }
+
+        if !success {
+            continue;
+        }
+
+        if game::is_winner_game(&mut game) {
+            winner = true;
+            break;
+        }
+
+        if game::is_looser_game(&mut game) {
+            break;
+        }
+
+        game::add_number(&mut game);
     }
 
-    //    let mut game: [[i32; 4]; 4] =
-    //        [
-    //            [0,0,0,0], // Line, not column
-    //            [0,0,0,0],
-    //            [0,0,0,0],
-    //            [0,0,0,0]
-    //        ];
-    //
-    //    game::add_number(&mut game);
-    //    game::add_number(&mut game);
-    //    game::print_board_game(&game);
-    //
     //    let mut looser = false;
     //    let mut success = false;
     //    while true {
@@ -120,17 +148,7 @@ fn main() {
     //            continue;
     //        }
     //
-    //        game::add_number(&mut game);
-    //        game::print_board_game(&game);
     //
-    //        if game::is_looser_game(&game) {
-    //            looser = true;
-    //            break;
-    //        }
-    //
-    //        if game::is_winner_game(&game) {
-    //            break;
-    //        }
     //    }
     //
     //    if looser {

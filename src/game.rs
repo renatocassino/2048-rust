@@ -7,6 +7,10 @@ extern crate ansi_term;
 use self::ansi_term::Colour::*;
 use self::ansi_term::Style;
 
+extern crate rustbox;
+use self::rustbox::{Color, RustBox, OutputMode};
+use self::rustbox::Key;
+
 pub fn rotate_board_game(game: &mut[[i32; 4]; 4]) {
     let n = 4;
     for i in 0..(4/2) {
@@ -143,36 +147,16 @@ fn get_colored_number(number_with_pad: String, number: i32) -> String {
     return number_with_pad;
 }
 
-fn print_number_with_pad(number: i32, last: bool) {
-    let mut color: String;
-    if number == 0 {
-        color = format!("    ");
-    } else if number < 10 {
-        color = format!("  {} ", number.to_string());
-    } else if number < 100 {
-        color = format!(" {} ", number.to_string());
-    } else if number < 1000 {
-        color = format!(" {}", number.to_string());
-    } else {
-        color = format!("{}", number.to_string());
-    }
-
-    print!("{}", get_colored_number(color, number));
-    if !last {
-        print!(" | ");
-    }
-}
-
-pub fn print_board_game(game: &[[i32; 4]; 4]) {
+pub fn print_board_game(rustbox: &RustBox, game: &[[i32; 4]; 4]) {
     for y in 0..4 {
-        print!("    ");
         for x in 0..4 {
-            print_number_with_pad(game[x][y], x == 3);
+            let s: String = game[x][y].to_string();
+            rustbox.print(1 + x,11 + y,rustbox::RB_BOLD, Color::White,Color::Black, &s);
         }
 
         if y != 4 {
-            println!("");
-            println!("    -------------------------");
+//            println!("");
+  //          println!("    -------------------------");
         }
     }
 }
