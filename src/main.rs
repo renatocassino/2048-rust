@@ -103,7 +103,7 @@ fn main() {
                     Key::Char('a') => { success = move_left(&mut game); }
                     Key::Char('s') => { success = move_down(&mut game); }
                     Key::Char('d') => { success = move_right(&mut game); }
-                    _ => { }
+                    _ => { continue; }
                 }
                 game::add_number(&mut game);
             },
@@ -124,37 +124,18 @@ fn main() {
             break;
         }
 
-        game::add_number(&mut game);
     }
 
-    //    let mut looser = false;
-    //    let mut success = false;
-    //    while true {
-    //        let answer = ask_movement();
-    //
-    //        if answer.trim() == "w" {
-    //            success = move_up(&mut game);
-    //        } else if answer.trim() == "a" {
-    //            success = move_left(&mut game);
-    //        } else if answer.trim() == "d" {
-    //            success = move_right(&mut game);
-    //        } else if answer.trim() == "s" {
-    //            success = move_down(&mut game);
-    //        } else {
-    //            continue;
-    //        }
-    //
-    //        if !success {
-    //            continue;
-    //        }
-    //
-    //
-    //    }
-    //
-    //    if looser {
-    //        println!("Ops! You loose the game!");
-    //    } else {
-    //        println!("CONGRATULATIONS! You win the game");
-    //    }
+    loop {
+        match rustbox.poll_event(false) {
+            Ok(rustbox::Event::KeyEvent(key)) => {
+                match key {
+                    Key::Char('q') => { break; }
+                    _ => { }
+                }
+            },
+            Err(e) => panic!("{}", e),
+            _ => { }
+        }
+    }
 }
-

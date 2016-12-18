@@ -75,10 +75,9 @@ fn find_target(game: &[i32; 4], x: i32, stop: i32) -> i32 {
     }
 
     let mut t:usize = (x as usize) - 1;
-    while t >= 0 { // (t=x-1;t>=0;t--) {
-        if game[t] != 0 { //(array[t]!=0) {
+    while t >= 0 {
+        if game[t] != 0 {
             if game[t] != game[x as usize] {
-                // merge is not possible, take next position
                 return (t as i32) + 1;
             }
             return t as i32;
@@ -90,7 +89,6 @@ fn find_target(game: &[i32; 4], x: i32, stop: i32) -> i32 {
         }
         t = t-1;
     }
-    // we did not find a
     return x;
 }
 
@@ -147,16 +145,49 @@ fn get_colored_number(number_with_pad: String, number: i32) -> String {
     return number_with_pad;
 }
 
+fn get_number_with_pad(number: i32) -> String {
+    let mut color: String;
+    if number == 0 {
+        color = format!("     ");
+    } else if number < 10 {
+        color = format!("  {}  ", number.to_string());
+    } else if number < 100 {
+        color = format!(" {}  ", number.to_string());
+    } else if number < 1000 {
+        color = format!(" {} ", number.to_string());
+    } else {
+        color = format!(" {}", number.to_string());
+    }
+    return color;
+}
+
+fn get_color(value: i32) -> Color {
+    if value == 4 {
+        return Color::Red;
+    }
+    return Color::White;
+}
+
+fn print_block(rustbox: &RustBox, x: usize, y: usize, value: i32) {
+    let v = get_number_with_pad(value);
+    let space = "     ";
+
+    let position_x = x*6;
+    let position_y = 13+y*4;
+
+    let color = get_color(value);
+//    bg = get_bg(value);
+    rustbox.print(position_x, position_y-1, rustbox::RB_BOLD, color, Color::Black, &space);
+    rustbox.print(position_x, position_y, rustbox::RB_BOLD, color, Color::Black, &v);
+    rustbox.print(position_x, position_y+1, rustbox::RB_BOLD, color, Color::Black, &space);
+
+}
+
 pub fn print_board_game(rustbox: &RustBox, game: &[[i32; 4]; 4]) {
     for y in 0..4 {
         for x in 0..4 {
-            let s: String = game[x][y].to_string();
-            rustbox.print(1 + x,11 + y,rustbox::RB_BOLD, Color::White,Color::Black, &s);
-        }
-
-        if y != 4 {
-//            println!("");
-  //          println!("    -------------------------");
+            let s = game[x][y];
+            print_block(&rustbox,x,y,s);
         }
     }
 }
