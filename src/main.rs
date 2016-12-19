@@ -125,8 +125,16 @@ fn main() {
         }
 
     }
-
     loop {
+        
+        if winner {
+            let message = "You win the game";
+            rustbox.print(1, 28, rustbox::RB_BOLD, Color::White, Color::Black, message);
+        } else {
+            let message = "You loose the game!";
+            rustbox.print(1, 28, rustbox::RB_BOLD, Color::White, Color::Black, message);
+        }
+        rustbox.present();
         match rustbox.poll_event(false) {
             Ok(rustbox::Event::KeyEvent(key)) => {
                 match key {
