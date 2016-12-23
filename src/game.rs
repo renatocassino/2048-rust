@@ -1,14 +1,11 @@
 extern crate rand;
 
-use std::io;
 use self::rand::Rng;
 
 extern crate ansi_term;
-use self::ansi_term::Colour::*;
 
 extern crate rustbox;
-use self::rustbox::{Color, RustBox, OutputMode, Style};
-use self::rustbox::Key;
+use self::rustbox::{Color, RustBox, Style};
 
 pub fn rotate_board_game(game: &mut[[i32; 4]; 4]) {
     let n = 4;
@@ -110,7 +107,6 @@ fn find_target(game: &[i32; 4], x: i32, stop: i32) -> i32 {
 pub fn slide_array(line: &mut[i32; 4]) -> bool {
     let size = 4;
     let mut stop = 0;
-    let mut score = 0;
     let mut success = false;
 
     for x in 0..size {
@@ -130,21 +126,20 @@ pub fn slide_array(line: &mut[i32; 4]) -> bool {
 }
 
 fn get_number_with_pad(number: i32) -> String {
-    let mut color: String;
+    let formated_number: String;
     if number == 0 {
-        color = format!("     ");
+        formated_number = format!("     ");
     } else if number < 10 {
-        color = format!("  {}  ", number.to_string());
+        formated_number = format!("  {}  ", number.to_string());
     } else if number < 100 {
-        color = format!("  {} ", number.to_string());
+        formated_number = format!("  {} ", number.to_string());
     } else if number < 1000 {
-        color = format!(" {} ", number.to_string());
+        formated_number = format!(" {} ", number.to_string());
     } else {
-        color = format!(" {}", number.to_string());
+        formated_number = format!(" {}", number.to_string());
     }
-    return color;
+    return formated_number;
 }
-
 
 fn get_color(value: i32) -> Color {
     if value == 2 || value == 4 || value == 16 || value == 64 || value == 2048 {

@@ -1,16 +1,7 @@
 mod game;
-use std::io;
 extern crate rustbox;
-use rustbox::{Color, RustBox, OutputMode};
+use rustbox::{Color, RustBox};
 use rustbox::Key;
-
-fn ask_movement() -> String {
-    let mut guess = String::new();
-    println!("Set a move position [w,a,s,d]: ");
-
-    io::stdin().read_line(&mut guess);
-    return guess;
-}
 
 fn move_up(game: &mut[[i32; 4]; 4]) -> bool {
     let mut success = false;
@@ -66,7 +57,7 @@ fn print_message(rustbox: &RustBox) {
 }
 
 fn main() {
-    let version = "1.0";
+    let version = "1..0";
     let mut game: [[i32; 4]; 4] =
         [
             [16,64,32,0], // Line is a column
