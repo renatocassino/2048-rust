@@ -5,7 +5,10 @@ use self::rand::Rng;
 
 extern crate ansi_term;
 use self::ansi_term::Colour::*;
-use self::ansi_term::Style;
+
+extern crate rustbox;
+use self::rustbox::{Color, RustBox, OutputMode, Style};
+use self::rustbox::Key;
 
 pub fn rotate_board_game(game: &mut[[i32; 4]; 4]) {
     let n = 4;
@@ -57,7 +60,22 @@ fn has_number_in_game(game: &[[i32;4]; 4], number:i32) -> bool {
 }
 
 pub fn is_looser_game(game: &[[i32;4]; 4]) -> bool {
-    return !has_number_in_game(game, 0);
+    let has_zero = has_number_in_game(game, 0);
+    if has_zero {
+        return false;
+    }
+
+    for y in 0..3 {
+        for x in 0..3 {
+            if game[x][y] == game[x+1][y] {
+                return false;
+            }
+            if game[x][y] == game[x][y+1] {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 pub fn is_winner_game(game: &[[i32;4]; 4]) -> bool {
@@ -71,10 +89,9 @@ fn find_target(game: &[i32; 4], x: i32, stop: i32) -> i32 {
     }
 
     let mut t:usize = (x as usize) - 1;
-    while t >= 0 { // (t=x-1;t>=0;t--) {
-        if game[t] != 0 { //(array[t]!=0) {
+    while t >= 0 {
+        if game[t] != 0 {
             if game[t] != game[x as usize] {
-                // merge is not possible, take next position
                 return (t as i32) + 1;
             }
             return t as i32;
@@ -86,7 +103,6 @@ fn find_target(game: &[i32; 4], x: i32, stop: i32) -> i32 {
         }
         t = t-1;
     }
-    // we did not find a
     return x;
 }
 
@@ -113,66 +129,83 @@ pub fn slide_array(line: &mut[i32; 4]) -> bool {
     return success;
 }
 
-fn get_colored_number(number_with_pad: String, number: i32) -> String {
-    if number == 0 {
-        return Style::new().on(Black).fg(White).paint(number_with_pad).to_string();
-    } else if number == 2 {
-        return Style::new().on(Yellow).fg(Black).paint(number_with_pad).to_string();
-    } else if number == 4 {
-        return Style::new().on(Cyan).fg(Black).paint(number_with_pad).to_string();
-    } else if number == 8 {
-        return Style::new().on(Purple).fg(Black).paint(number_with_pad).to_string();
-    } else if number == 16 {
-        return Style::new().on(Green).fg(Black).paint(number_with_pad).to_string();
-    } else if number == 32 {
-        return Style::new().on(Purple).fg(White).bold().paint(number_with_pad).to_string();
-    } else if number == 64 {
-        return Style::new().on(Green).fg(White).bold().paint(number_with_pad).to_string();
-    } else if number == 128 {
-        return Style::new().on(White).fg(Black).paint(number_with_pad).to_string();
-    } else if number == 256 {
-        return Style::new().on(Red).fg(Black).bold().paint(number_with_pad).to_string();
-    } else if number == 512 {
-        return Style::new().on(Cyan).fg(Yellow).paint(number_with_pad).to_string();
-    } else if number == 1024 {
-        return Style::new().on(Red).fg(Black).paint(number_with_pad).to_string();
-    } else if number == 2048 {
-        return Style::new().on(Red).fg(White).bold().paint(number_with_pad).to_string();
-    }
-
-    return number_with_pad;
-}
-
-fn print_number_with_pad(number: i32, last: bool) {
+fn get_number_with_pad(number: i32) -> String {
     let mut color: String;
     if number == 0 {
-        color = format!("    ");
+        color = format!("     ");
     } else if number < 10 {
-        color = format!("  {} ", number.to_string());
+        color = format!("  {}  ", number.to_string());
     } else if number < 100 {
-        color = format!(" {} ", number.to_string());
+        color = format!("  {} ", number.to_string());
     } else if number < 1000 {
-        color = format!(" {}", number.to_string());
+        color = format!(" {} ", number.to_string());
     } else {
-        color = format!("{}", number.to_string());
+        color = format!(" {}", number.to_string());
     }
-
-    print!("{}", get_colored_number(color, number));
-    if !last {
-        print!(" | ");
-    }
+    return color;
 }
 
-pub fn print_board_game(game: &[[i32; 4]; 4]) {
-    for y in 0..4 {
-        print!("    ");
-        for x in 0..4 {
-            print_number_with_pad(game[x][y], x == 3);
-        }
 
-        if y != 4 {
-            println!("");
-            println!("    -------------------------");
+fn get_color(value: i32) -> Color {
+    if value == 2 || value == 4 || value == 16 || value == 64 || value == 2048 {
+        return Color::White;
+    } else if value == 8 || value == 512 {
+        return Color::Red;
+    } else if value == 32 {
+        return Color::Black;
+    } else if value == 128 || value == 256 {
+        return Color::Yellow;
+    }
+    return Color::Magenta;
+}
+
+fn get_bg(value: i32) -> Color {
+    if value == 0 {
+        return Color::Black;
+    } else if value == 2 {
+        return Color::Cyan;
+    } else if value == 4 || value == 256 {
+        return Color::Magenta;
+    } else if value == 8 || value == 1024 {
+        return Color::White;
+    } else if value == 16 {
+        return Color::Green;
+    } else if value == 32 || value == 512 {
+        return Color::Yellow;
+    } else if value == 128 || value == 2048 {
+        return Color::Red;
+    }
+    return Color::Blue;
+}
+
+fn get_font_style(value: i32) -> Style {
+    if value == 128 {
+        return rustbox::RB_NORMAL;
+    }
+    return rustbox::RB_BOLD;
+}
+
+fn print_block(rustbox: &RustBox, x: usize, y: usize, value: i32) {
+    let v = get_number_with_pad(value);
+    let space = "     ";
+
+    let position_x = (x*6) + 8;
+    let position_y = 13+y*4;
+
+    let color = get_color(value);
+    let bg = get_bg(value);
+    let style = get_font_style(value);
+    rustbox.print(position_x, position_y-1, style, color, bg, &space);
+    rustbox.print(position_x, position_y, style, color, bg, &v);
+    rustbox.print(position_x, position_y+1, style, color, bg, &space);
+
+}
+
+pub fn print_board_game(rustbox: &RustBox, game: &[[i32; 4]; 4]) {
+    for y in 0..4 {
+        for x in 0..4 {
+            let s = game[x][y];
+            print_block(&rustbox,x,y,s);
         }
     }
 }

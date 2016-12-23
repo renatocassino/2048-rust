@@ -30,14 +30,15 @@ fn replace_random_zero_in_2_or_4_in_game() {
 fn test_if_loose_the_game() {
     let game: [[i32; 4]; 4] =
     [
-        [2,2,2,2],
-        [2,2,2,2],
-        [2,2,2,2],
-        [2,2,2,2]
+        [1,2,3,4],
+        [5,6,7,8],
+        [9,10,11,12],
+        [13,14,15,16]
     ];
 
     assert_eq!(game::is_looser_game(&game), true);
 }
+
 
 #[test]
 fn test_if_not_loose_the_game() {
@@ -46,14 +47,27 @@ fn test_if_not_loose_the_game() {
         [2,2,2,2],
         [2,2,2,2],
         [2,2,2,2],
-        [2,2,2,2]
+        [2,2,2,0]
     ];
 
-    assert_eq!(game::is_looser_game(&game), true);
+    assert_eq!(game::is_looser_game(&game), false);
 }
 
 #[test]
-fn test_if_not_win_the_game() {
+fn test_if_not_loose_the_game_with_possible_movement() {
+    let game: [[i32; 4]; 4] =
+    [
+        [2,2,2,2],
+        [2,2,2,2],
+        [2,2,2,2],
+        [2,2,2,2]
+    ];
+
+    assert_eq!(game::is_looser_game(&game), false);
+}
+
+#[test]
+fn test_if_not_win_the_game_with_zeros() {
     let game: [[i32; 4]; 4] =
     [
         [0,0,0,0],
