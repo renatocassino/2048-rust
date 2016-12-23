@@ -5,10 +5,9 @@ use self::rand::Rng;
 
 extern crate ansi_term;
 use self::ansi_term::Colour::*;
-use self::ansi_term::Style;
 
 extern crate rustbox;
-use self::rustbox::{Color, RustBox, OutputMode};
+use self::rustbox::{Color, RustBox, OutputMode, Style};
 use self::rustbox::Key;
 
 pub fn rotate_board_game(game: &mut[[i32; 4]; 4]) {
@@ -130,36 +129,6 @@ pub fn slide_array(line: &mut[i32; 4]) -> bool {
     return success;
 }
 
-fn get_colored_number(number_with_pad: String, number: i32) -> String {
-    if number == 0 {
-        return Style::new().on(Black).fg(White).paint(number_with_pad).to_string();
-    } else if number == 2 {
-        return Style::new().on(Yellow).fg(Black).paint(number_with_pad).to_string();
-    } else if number == 4 {
-        return Style::new().on(Cyan).fg(Black).paint(number_with_pad).to_string();
-    } else if number == 8 {
-        return Style::new().on(Purple).fg(Black).paint(number_with_pad).to_string();
-    } else if number == 16 {
-        return Style::new().on(Green).fg(Black).paint(number_with_pad).to_string();
-    } else if number == 32 {
-        return Style::new().on(Purple).fg(White).bold().paint(number_with_pad).to_string();
-    } else if number == 64 {
-        return Style::new().on(Green).fg(White).bold().paint(number_with_pad).to_string();
-    } else if number == 128 {
-        return Style::new().on(White).fg(Black).paint(number_with_pad).to_string();
-    } else if number == 256 {
-        return Style::new().on(Red).fg(Black).bold().paint(number_with_pad).to_string();
-    } else if number == 512 {
-        return Style::new().on(Cyan).fg(Yellow).paint(number_with_pad).to_string();
-    } else if number == 1024 {
-        return Style::new().on(Red).fg(Black).paint(number_with_pad).to_string();
-    } else if number == 2048 {
-        return Style::new().on(Red).fg(White).bold().paint(number_with_pad).to_string();
-    }
-
-    return number_with_pad;
-}
-
 fn get_number_with_pad(number: i32) -> String {
     let mut color: String;
     if number == 0 {
@@ -167,7 +136,7 @@ fn get_number_with_pad(number: i32) -> String {
     } else if number < 10 {
         color = format!("  {}  ", number.to_string());
     } else if number < 100 {
-        color = format!(" {}  ", number.to_string());
+        color = format!("  {} ", number.to_string());
     } else if number < 1000 {
         color = format!(" {} ", number.to_string());
     } else {
@@ -176,25 +145,59 @@ fn get_number_with_pad(number: i32) -> String {
     return color;
 }
 
+
 fn get_color(value: i32) -> Color {
-    if value == 4 {
+    if value == 2 || value == 4 || value == 16 || value == 64 || value == 2048 {
+        return Color::White;
+    } else if value == 8 || value == 512 {
+        return Color::Red;
+    } else if value == 32 {
+        return Color::Black;
+    } else if value == 128 || value == 256 {
+        return Color::Yellow;
+    }
+    return Color::Magenta;
+}
+
+fn get_bg(value: i32) -> Color {
+    if value == 0 {
+        return Color::Black;
+    } else if value == 2 {
+        return Color::Cyan;
+    } else if value == 4 || value == 256 {
+        return Color::Magenta;
+    } else if value == 8 || value == 1024 {
+        return Color::White;
+    } else if value == 16 {
+        return Color::Green;
+    } else if value == 32 || value == 512 {
+        return Color::Yellow;
+    } else if value == 128 || value == 2048 {
         return Color::Red;
     }
-    return Color::White;
+    return Color::Blue;
+}
+
+fn get_font_style(value: i32) -> Style {
+    if value == 128 {
+        return rustbox::RB_NORMAL;
+    }
+    return rustbox::RB_BOLD;
 }
 
 fn print_block(rustbox: &RustBox, x: usize, y: usize, value: i32) {
     let v = get_number_with_pad(value);
     let space = "     ";
 
-    let position_x = x*6;
+    let position_x = (x*6) + 8;
     let position_y = 13+y*4;
 
     let color = get_color(value);
-//    bg = get_bg(value);
-    rustbox.print(position_x, position_y-1, rustbox::RB_BOLD, color, Color::Black, &space);
-    rustbox.print(position_x, position_y, rustbox::RB_BOLD, color, Color::Black, &v);
-    rustbox.print(position_x, position_y+1, rustbox::RB_BOLD, color, Color::Black, &space);
+    let bg = get_bg(value);
+    let style = get_font_style(value);
+    rustbox.print(position_x, position_y-1, style, color, bg, &space);
+    rustbox.print(position_x, position_y, style, color, bg, &v);
+    rustbox.print(position_x, position_y+1, style, color, bg, &space);
 
 }
 

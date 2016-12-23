@@ -47,26 +47,27 @@ fn move_down(mut game: &mut[[i32; 4]; 4]) -> bool {
     return success;
 }
 
-fn print_logo(rustbox: &RustBox) {
-    rustbox.print(1,1,rustbox::RB_BOLD, Color::White, Color::Black, "    _______  _______  _   ___   _____    _______  _______  __   __  _______ ");
-    rustbox.print(1,2,rustbox::RB_BOLD, Color::White, Color::Black, "   |       ||  _    || | |   | |  _  |  |       ||   _   ||  |_|  ||       |");
-    rustbox.print(1,3,rustbox::RB_BOLD, Color::White, Color::Black, "   |____   || | |   || |_|   | | |_| |  |    ___||  |_|  ||       ||    ___|");
-    rustbox.print(1,4,rustbox::RB_BOLD, Color::White, Color::Black, "    ____|  || | |   ||       ||   _   | |   | __ |       ||       ||   |___ ");
-    rustbox.print(1,5,rustbox::RB_BOLD, Color::White, Color::Black, "   | ______|| |_|   ||___    ||  | |  | |   ||  ||       ||       ||    ___|");
-    rustbox.print(1,6,rustbox::RB_BOLD, Color::White, Color::Black, "   | |_____ |       |    |   ||  |_|  | |   |_| ||   _   || ||_|| ||   |___ ");
-    rustbox.print(1,7,rustbox::RB_BOLD, Color::White, Color::Black, "   |_______||_______|    |___||_______| |_______||__| |__||_|   |_||_______|");
-    rustbox.print(1,8,rustbox::RB_BOLD, Color::White, Color::Black, "                                                                 By Tacnoman");
-    rustbox.print(1,9,rustbox::RB_BOLD, Color::White, Color::Black, "                                                                Version: 1.0");
+fn print_logo(rustbox: &RustBox, version: &str) {
+    let default_color = Color::Default;
+    let line_version = format!("                                                                 Version: {}", version);
+    rustbox.print(4,1,rustbox::RB_BOLD, default_color, default_color, "    _______  _______  _   ___   _____     _______  _______  __   __  _______ ");
+    rustbox.print(4,2,rustbox::RB_BOLD, default_color, default_color, "   |       ||  _    || | |   | |  _  |   |       ||   _   ||  |_|  ||       |");
+    rustbox.print(4,3,rustbox::RB_BOLD, default_color, default_color, "   |____   || | |   || |_|   | | |_| |   |    ___||  |_|  ||       ||    ___|");
+    rustbox.print(4,4,rustbox::RB_BOLD, default_color, default_color, "    ____|  || | |   ||       ||   _   |  |   | __ |       ||       ||   |___ ");
+    rustbox.print(4,5,rustbox::RB_BOLD, default_color, default_color, "   | ______|| |_|   ||___    ||  | |  |  |   ||  ||       ||       ||    ___|");
+    rustbox.print(4,6,rustbox::RB_BOLD, default_color, default_color, "   | |_____ |       |    |   ||  |_|  |  |   |_| ||   _   || ||_|| ||   |___ ");
+    rustbox.print(4,7,rustbox::RB_BOLD, default_color, default_color, "   |_______||_______|    |___||_______|  |_______||__| |__||_|   |_||_______|");
+    rustbox.print(4,8,rustbox::RB_BOLD, default_color, default_color, "                                                                  By Tacnoman");
+    rustbox.print(4,9,rustbox::RB_BOLD, default_color, default_color, &line_version);
 }
 
 fn print_message(rustbox: &RustBox) {
-    rustbox.print(1, 30, rustbox::RB_BOLD, Color::White, Color::Black, "You can control the board with the keys w,a,s and d.");
+    rustbox.print(8, 30, rustbox::RB_BOLD, Color::Default, Color::Default, "You can control the board with the keys w,a,s and d.");
 }
 
 fn main() {
     let version = "1.0";
 
-    
     let mut game: [[i32; 4]; 4] =
         [
             [0,0,0,0], // Line is a column
@@ -74,7 +75,8 @@ fn main() {
             [0,0,0,0],
             [0,0,0,0]
         ];
-    
+
+    // Start game with two numbers
     game::add_number(&mut game);
     game::add_number(&mut game);
 
@@ -83,14 +85,10 @@ fn main() {
         Result::Err(e) => panic!("{}", e),
     };
 
-    rustbox.print(1, 1, rustbox::RB_BOLD, Color::White, Color::Black, "Hello, world!");
-    rustbox.print(1, 3, rustbox::RB_BOLD, Color::White, Color::Black,
-                  "Press 'q' to quit.");
-
     let mut winner = false;
     let mut success = false;
     loop {
-        print_logo(&rustbox);
+        print_logo(&rustbox, &version);
         print_message(&rustbox);
 
         game::print_board_game(&rustbox, &game);
@@ -105,7 +103,6 @@ fn main() {
                     Key::Char('d') => { success = move_right(&mut game); }
                     _ => { continue; }
                 }
-                game::add_number(&mut game);
             },
             Err(e) => panic!("{}", e),
             _ => { }
@@ -123,23 +120,26 @@ fn main() {
         if game::is_looser_game(&mut game) {
             break;
         }
+        game::add_number(&mut game);
 
     }
+
+    game::print_board_game(&rustbox, &game);
+
     loop {
-        
         if winner {
-            let message = "You win the game";
-            rustbox.print(1, 28, rustbox::RB_BOLD, Color::White, Color::Black, message);
+            let message = " Congrats! You win the game!! Press Q to quit. ";
+            rustbox.print(8, 28, rustbox::RB_BOLD, Color::Default, Color::Green, message);
         } else {
-            let message = "You loose the game!";
-            rustbox.print(1, 28, rustbox::RB_BOLD, Color::White, Color::Black, message);
+            let message = " You loose the game! Press Q to quit. ";
+            rustbox.print(8, 28, rustbox::RB_BOLD, Color::Default, Color::Red, message);
         }
         rustbox.present();
         match rustbox.poll_event(false) {
             Ok(rustbox::Event::KeyEvent(key)) => {
                 match key {
                     Key::Char('q') => { break; }
-                    _ => { }
+                    _ => { continue; }
                 }
             },
             Err(e) => panic!("{}", e),
