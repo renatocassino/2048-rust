@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Better interface for the game
 - More tests
 - ASCII name in game
+- New screenshot for readme
 
 ### Changed
 - Add a changelog

@@ -26,4 +26,4 @@ Bugs?
 
 ## Screenshot
 
-![dubai thumb](./images/thumbnail.jpg)
+![Screenshot](./images/v1.1.png)
