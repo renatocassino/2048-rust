@@ -61,7 +61,22 @@ fn has_number_in_game(game: &[[i32;4]; 4], number:i32) -> bool {
 }
 
 pub fn is_looser_game(game: &[[i32;4]; 4]) -> bool {
-    return !has_number_in_game(game, 0);
+    let has_zero = has_number_in_game(game, 0);
+    if has_zero {
+        return false;
+    }
+
+    for y in 0..3 {
+        for x in 0..3 {
+            if game[x][y] == game[x+1][y] {
+                return false;
+            }
+            if game[x][y] == game[x][y+1] {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 pub fn is_winner_game(game: &[[i32;4]; 4]) -> bool {
