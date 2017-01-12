@@ -60,10 +60,10 @@ fn main() {
     let version = "1..0";
     let mut game: [[i32; 4]; 4] =
         [
-            [16,64,32,0], // Line is a column
-            [0,0,0,512],
-            [0,256,512,128],
-            [1024,1024,512,256]
+            [0,0,0,0], // Line is a column
+            [0,0,0,0],
+            [0,0,0,0],
+            [0,0,0,0]
         ];
 
     // Start game with two numbers
