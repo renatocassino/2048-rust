@@ -4,6 +4,6 @@ version = "0.1.0"
 authors = ["Tacnoman <renatocassino@gmail.com>"]
 
 [dependencies]
-rand="0.3.0"
-ansi_term = "0.9.0"
+rand="0.8.3"
+ansi_term = "0.12"
 rustbox = "*"

@@ -36,8 +36,8 @@ pub fn add_number(game: &mut[[i32; 4]; 4]) {
         }
     }
 
-    let secret_number = rand::thread_rng().gen_range(0, count);
-    let number_to_add = if (rand::thread_rng().gen_range(0, 10) % 2) == 0 { 2 } else { 4 };
+    let secret_number = rand::thread_rng().gen_range(0..count);
+    let number_to_add = if (rand::thread_rng().gen_range(0..10) % 2) == 0 { 2 } else { 4 };
 
     let v1:usize = indexes[secret_number][0];
     let v2:usize = indexes[secret_number][1];
