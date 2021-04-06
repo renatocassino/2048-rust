@@ -20,27 +20,33 @@ pub fn rotate_board_game(game: &mut[[i32; 4]; 4]) {
     }
 }
 
-pub fn add_number(game: &mut[[i32; 4]; 4]) {
-    let mut indexes: [[usize; 2]; 16] = [
-        [0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]
-    ];
-    let mut count = 0;
+pub fn get_empty_blocks(game: &mut[[i32; 4]; 4]) -> Vec<[usize; 2]> {
+    // let list = game.iter().fold([], |list_empty, line| {
+    //     list_empty.push(1);
+    //     return list_empty;
+    // });
+
+    let mut list_empty = Vec::new();
 
     for y in 0..4 {
         for x in 0..4 {
             if game[x][y] == 0 {
-                indexes[count][0] = x;
-                indexes[count][1] = y;
-                count = count + 1;
+                list_empty.push([x, y]);
             }
         }
     }
 
-    let secret_number = rand::thread_rng().gen_range(0..count);
+    return list_empty;
+}
+
+pub fn add_number(game: &mut[[i32; 4]; 4]) {
+    let list_empty = get_empty_blocks(game);
+
+    let secret_number = rand::thread_rng().gen_range(0..list_empty.len());
     let number_to_add = if (rand::thread_rng().gen_range(0..10) % 2) == 0 { 2 } else { 4 };
 
-    let v1:usize = indexes[secret_number][0];
-    let v2:usize = indexes[secret_number][1];
+    let v1:usize = list_empty[secret_number][0];
+    let v2:usize = list_empty[secret_number][1];
     game[v1][v2] = number_to_add;
 }
 
@@ -200,7 +206,7 @@ pub fn print_board_game(rustbox: &RustBox, game: &[[i32; 4]; 4]) {
     for y in 0..4 {
         for x in 0..4 {
             let s = game[x][y];
-            print_block(&rustbox,x,y,s);
+            print_block(&rustbox, x, y, s);
         }
     }
 }

@@ -12,6 +12,21 @@ fn slide_array() {
 }
 
 #[test]
+fn test_get_empty_blocks_list() {
+    let mut game: [[i32; 4]; 4] = [
+        [2,2,2,2],
+        [2,2,2,2],
+        [2,2,2,2],
+        [0,2,2,2]
+    ];
+
+    let empty_blocks = game::get_empty_blocks(&mut game);
+    assert!(
+        (empty_blocks[0] == [3, 0])
+    );
+}
+
+#[test]
 fn replace_random_zero_in_2_or_4_in_game() {
     let mut game: [[i32; 4]; 4] = [
         [2,2,2,2],
